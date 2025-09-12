@@ -1,0 +1,10 @@
+body {
+    background: linear-gradient(135deg, #010101 0%, #c0f16b 100%);
+}
+
+#box-login {
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    border-radius: 20px;
+    border: none;
+    background: #fff;
+}
