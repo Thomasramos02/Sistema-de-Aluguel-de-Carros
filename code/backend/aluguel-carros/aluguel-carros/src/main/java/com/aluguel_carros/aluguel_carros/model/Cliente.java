@@ -14,8 +14,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-
-@Table(name = "cliente")
+@Table(name = "clientes")
 @Entity
 public class Cliente extends Usuario {
 	
@@ -25,7 +24,7 @@ public class Cliente extends Usuario {
 
     private String rg;
 
-    private String cpf;
+    private String CPF;
 
     private double rendimentosAuferidos;
 

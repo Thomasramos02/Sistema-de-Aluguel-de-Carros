@@ -10,61 +10,38 @@ import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class ClienteServices {
-    
     @Autowired
     private ClienteRepositories clienteRepositories;
+
+    public Cliente buscarPorCPF(String CPF) {
+        return clienteRepositories.findByCPF(CPF)
+                .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado"));
+    }
+
+    public void deletarPorCPF(String CPF) {
+        clienteRepositories.deleteByCPF(CPF);
+    }
 
     public Cliente salvarCliente(Cliente cliente) {
         return clienteRepositories.saveAndFlush(cliente);
     }
 
-    public void deletarCliente(Long id) {
-        clienteRepositories.deleteById(id);
+    public void atualizarCliente(String cpf, Cliente cliente) {
+        Cliente clienteAtual = buscarPorCPF(cpf);
+        Cliente clienteAtualizado = Cliente.builder()
+        .id(clienteAtual.getId())
+        .nome(cliente.getNome() != null ? cliente.getNome() : clienteAtual.getNome())
+        .email(cliente.getEmail() != null ? cliente.getEmail() : clienteAtual.getEmail())
+        .senha(cliente.getSenha() != null ? cliente.getSenha() : clienteAtual.getSenha())
+        .telefone(cliente.getTelefone() != null ? cliente.getTelefone() : clienteAtual.getTelefone())
+        .endereco(cliente.getEndereco() != null ? cliente.getEndereco() : clienteAtual.getEndereco())
+        .rg(cliente.getRg() != null ? cliente.getRg() : clienteAtual.getRg())
+        .CPF(cliente.getCPF() != null ? cliente.getCPF() : clienteAtual.getCPF())
+        .rendimentosAuferidos(cliente.getRendimentosAuferidos() != 0 ? cliente.getRendimentosAuferidos() : clienteAtual.getRendimentosAuferidos())
+        .profissao(cliente.getProfissao() != null ? cliente.getProfissao() : clienteAtual.getProfissao())
+        .build();
+        clienteRepositories.saveAndFlush(clienteAtualizado);
+
     }
-
-    public Cliente buscarClientePorCPF(String CPF) {
-        return clienteRepositories.findByCPF(CPF).orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado com o CPF: " + CPF));
-    }
-
-  
-       public void atualizarCliente(String CPF, Cliente cliente) {
-    Cliente clienteAtual = buscarClientePorCPF(CPF);
-
- 
-    Cliente clienteAtualizado = Cliente.builder()
-    .Id(clienteAtual.getId()) // <-- CORRETO: "id" minúsculo
-    .nome(cliente.getNome() != null ? cliente.getNome() : clienteAtual.getNome())
-    .email(cliente.getEmail() != null ? cliente.getEmail() : clienteAtual.getEmail())
-    .build();
-
-    clienteAtualizado.setSenha(
-            cliente.getSenha() != null ? cliente.getSenha() : clienteAtual.getSenha()
-    );
-    clienteAtualizado.setTelefone(
-            cliente.getTelefone() != null ? cliente.getTelefone() : clienteAtual.getTelefone()
-    );
-    clienteAtualizado.setEndereco(
-            cliente.getEndereco() != null ? cliente.getEndereco() : clienteAtual.getEndereco()
-    );
-    clienteAtualizado.setRg(
-            cliente.getRg() != null ? cliente.getRg() : clienteAtual.getRg()
-    );
-    clienteAtualizado.setCpf(
-            cliente.getCpf() != null ? cliente.getCpf() : clienteAtual.getCpf()
-    );
-    clienteAtualizado.setRendimentosAuferidos(
-            cliente.getRendimentosAuferidos() != 0 ? cliente.getRendimentosAuferidos() : clienteAtual.getRendimentosAuferidos()
-    );
-    clienteAtualizado.setProfissao(
-            cliente.getProfissao() != null ? cliente.getProfissao() : clienteAtual.getProfissao()
-    );
-
-
-
-    clienteRepositories.save(clienteAtualizado);
-}
-
-
-
 
 }

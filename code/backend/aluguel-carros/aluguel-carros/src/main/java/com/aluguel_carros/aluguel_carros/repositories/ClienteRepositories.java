@@ -6,9 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.aluguel_carros.aluguel_carros.model.Cliente;
 
+import jakarta.transaction.Transactional;
+
 public interface  ClienteRepositories extends JpaRepository<Cliente, Long> {
     
     Optional<Cliente> findByCPF(String CPF);
 
-    
+    @Transactional
+    void deleteByCPF(String CPF);
 }

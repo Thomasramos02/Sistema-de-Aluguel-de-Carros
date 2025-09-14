@@ -24,26 +24,30 @@ public class ClienteController {
 
     @PostMapping("/criarCliente")
     public ResponseEntity<Cliente> criarCliente(@RequestBody Cliente cliente) {
-        Cliente clienteSalvo = clienteServices.salvarCliente(cliente);
-        return ResponseEntity.ok(clienteSalvo);
+        
+        clienteServices.salvarCliente(cliente);
+
+        return ResponseEntity.status(201).body(cliente);
     }
 
-   @GetMapping("/buscarCliente")
-   public ResponseEntity<Cliente> buscarCliente(@RequestParam String CPF) {
-       Cliente cliente = clienteServices.buscarClientePorCPF(CPF);
-       return ResponseEntity.ok(cliente);
-   }
 
-   @PutMapping("/atualizarCliente")
-   public ResponseEntity<Cliente> atualizarCliente(@RequestParam String CPF, @RequestBody Cliente cliente) {
-       clienteServices.atualizarCliente(CPF, cliente);
-       return ResponseEntity.ok().build();
-   }
 
-   @DeleteMapping("/deletarCliente")
-   public ResponseEntity<Void> deletarCliente(@RequestParam Long id) {
-       clienteServices.deletarCliente(id);
-       return ResponseEntity.noContent().build();
-   }
+    @GetMapping("/buscarCliente")
+    public ResponseEntity<Cliente> buscarCliente(@RequestParam String cpf) {
+        Cliente cliente = clienteServices.buscarPorCPF(cpf);
+        return ResponseEntity.ok(cliente);
+    }
 
+    @DeleteMapping("/deletarCliente")
+    public ResponseEntity<Void> deletarCliente(@RequestParam String cpf) {
+        clienteServices.deletarPorCPF(cpf);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/atualizarCliente")
+    public ResponseEntity<Void> atualizarCliente(@RequestParam String cpf, @RequestBody Cliente cliente) {
+        clienteServices.atualizarCliente(cpf, cliente);
+        return ResponseEntity.noContent().build();
+    }
+ 
 }
