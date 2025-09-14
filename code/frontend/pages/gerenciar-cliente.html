@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="../css/cadastro.css">
+    <title>Gerenciar Cliente</title>
+</head>
+<body>
+
+    <div class="container d-flex p-2 flex-column align-items-center align-self-center" id="login-box">
+        <h3 class="text-center mt-3">Perfil do Cliente</h3>
+
+        <div id="client-profile-container" class="w-100 mt-4">
+            <p><strong>Nome:</strong> <span id="client-name"></span></p>
+            <p><strong>Email:</strong> <span id="client-email"></span></p>
+            <p><strong>CPF:</strong> <span id="client-cpf"></span></p>
+            <p><strong>Telefone:</strong> <span id="client-phone"></span></p>
+
+            <div class="d-flex justify-content-center mt-4">
+                <button class="btn btn-warning me-3" id="edit-btn">Editar</button>
+                <button class="btn btn-danger" id="delete-btn">Excluir</button>
+            </div>
+        </div>
+
+        <form id="edit-form" class="w-100 mt-4 d-none">
+            <h4 class="text-center">Editar Dados</h4>
+            <input type="text" id="edit-name" class="form-control mb-3 largo" placeholder="Nome" required>
+            <input type="email" id="edit-email" class="form-control mb-3 largo" placeholder="Email" required>
+            <input type="text" id="edit-cpf" class="form-control mb-3 largo" placeholder="CPF">
+            <input type="text" id="edit-phone" class="form-control mb-3 largo" placeholder="Telefone">
+            <button type="submit" class="btn btn-success mt-3" style="width: 100%;">Salvar Alterações</button>
+            <button type="button" id="cancel-edit-btn" class="btn btn-secondary mt-2" style="width: 100%;">Cancelar</button>
+        </form>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../javascript/gerenciar-cliente.js"></script>
+
+</body>
+</html>
