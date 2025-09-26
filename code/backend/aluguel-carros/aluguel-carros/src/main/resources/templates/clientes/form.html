@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${cliente.id != null ? 'Editar Cliente' : 'Novo Cliente'}">Novo Cliente - Sistema de Aluguel de Carros</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        }
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            transition: border-color 0.3s ease;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .alert {
+            border-radius: 15px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-car"></i> BrawnRent
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/clientes">Clientes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/carros">Carros</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/alugueis">Aluguéis</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-lg-6">
+                <h1>
+                    <i class="fas fa-user-plus text-primary"></i> 
+                    <span th:text="${cliente.id != null ? 'Editar Cliente' : 'Novo Cliente'}">Novo Cliente</span>
+                </h1>
+                <p class="text-muted">Preencha os dados do cliente</p>
+            </div>
+            <div class="col-lg-6 text-end">
+                <a href="/clientes" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </a>
+            </div>
+        </div>
+
+        <!-- Alerts -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Form -->
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-body">
+                        <form th:action="${cliente.id != null ? '/clientes/' + cliente.id : '/clientes'}" 
+                              th:object="${cliente}" method="post">
+                            
+                            <div class="row">
+                                <div class="col-lg-6 mb-3">
+                                    <label for="nome" class="form-label">Nome Completo *</label>
+                                    <input type="text" class="form-control" id="nome" th:field="*{nome}" 
+                                           placeholder="Digite o nome completo" required>
+                                    <div th:if="${#fields.hasErrors('nome')}" class="text-danger">
+                                        <small th:errors="*{nome}"></small>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="email" class="form-label">Email *</label>
+                                    <input type="email" class="form-control" id="email" th:field="*{email}" 
+                                           placeholder="Digite o email" required>
+                                    <div th:if="${#fields.hasErrors('email')}" class="text-danger">
+                                        <small th:errors="*{email}"></small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-6 mb-3">
+                                    <label for="senha" class="form-label">Senha *</label>
+                                    <input type="password" class="form-control" id="senha" th:field="*{senha}" 
+                                           placeholder="Digite a senha" required>
+                                    <div th:if="${#fields.hasErrors('senha')}" class="text-danger">
+                                        <small th:errors="*{senha}"></small>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="telefone" class="form-label">Telefone *</label>
+                                    <input type="tel" class="form-control" id="telefone" th:field="*{telefone}" 
+                                           placeholder="(11) 99999-9999" required>
+                                    <div th:if="${#fields.hasErrors('telefone')}" class="text-danger">
+                                        <small th:errors="*{telefone}"></small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-12 mb-3">
+                                    <label for="endereco" class="form-label">Endereço *</label>
+                                    <input type="text" class="form-control" id="endereco" th:field="*{endereco}" 
+                                           placeholder="Digite o endereço completo" required>
+                                    <div th:if="${#fields.hasErrors('endereco')}" class="text-danger">
+                                        <small th:errors="*{endereco}"></small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-6 mb-3">
+                                    <label for="rg" class="form-label">RG *</label>
+                                    <input type="text" class="form-control" id="rg" th:field="*{rg}" 
+                                           placeholder="Digite o RG" required>
+                                    <div th:if="${#fields.hasErrors('rg')}" class="text-danger">
+                                        <small th:errors="*{rg}"></small>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="cpf" class="form-label">CPF *</label>
+                                    <input type="text" class="form-control" id="cpf" th:field="*{cpf}" 
+                                           placeholder="000.000.000-00" required>
+                                    <div th:if="${#fields.hasErrors('cpf')}" class="text-danger">
+                                        <small th:errors="*{cpf}"></small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-6 mb-3">
+                                    <label for="profissao" class="form-label">Profissão *</label>
+                                    <input type="text" class="form-control" id="profissao" th:field="*{profissao}" 
+                                           placeholder="Digite a profissão" required>
+                                    <div th:if="${#fields.hasErrors('profissao')}" class="text-danger">
+                                        <small th:errors="*{profissao}"></small>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="rendimentosAuferidos" class="form-label">Rendimentos Auferidos</label>
+                                    <input type="number" class="form-control" id="rendimentosAuferidos" 
+                                           th:field="*{rendimentosAuferidos}" placeholder="0.00" step="0.01" min="0">
+                                    <div th:if="${#fields.hasErrors('rendimentosAuferidos')}" class="text-danger">
+                                        <small th:errors="*{rendimentosAuferidos}"></small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mt-4">
+                                <div class="col-lg-12 text-end">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-save"></i> 
+                                        <span th:text="${cliente.id != null ? 'Atualizar' : 'Salvar'}">Salvar</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Máscara para CPF
+        document.getElementById('cpf').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            e.target.value = value;
+        });
+
+        // Máscara para telefone
+        document.getElementById('telefone').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/(\d{2})(\d)/, '($1) $2');
+            value = value.replace(/(\d{4})(\d)/, '$1-$2');
+            value = value.replace(/(\d{4})-(\d)(\d{4})/, '$1$2-$3');
+            e.target.value = value;
+        });
+    </script>
+</body>
+</html>

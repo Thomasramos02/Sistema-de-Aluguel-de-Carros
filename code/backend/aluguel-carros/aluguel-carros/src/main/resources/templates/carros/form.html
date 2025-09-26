@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${carro.id != null ? 'Editar Carro' : 'Novo Carro'}">Novo Carro - Sistema de Aluguel de Carros</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        }
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            transition: border-color 0.3s ease;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .alert {
+            border-radius: 15px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-car"></i> BrawnRent
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/clientes">Clientes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/carros">Carros</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/alugueis">Aluguéis</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-lg-6">
+                <h1>
+                    <i class="fas fa-car text-primary"></i> 
+                    <span th:text="${carro.id != null ? 'Editar Carro' : 'Novo Carro'}">Novo Carro</span>
+                </h1>
+                <p class="text-muted">Preencha os dados do veículo</p>
+            </div>
+            <div class="col-lg-6 text-end">
+                <a href="/carros" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </a>
+            </div>
+        </div>
+
+        <!-- Alerts -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Form -->
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-body">
+                        <form th:action="${carro.id != null ? '/carros/' + carro.id : '/carros'}" 
+                              th:object="${carro}" method="post">
+                            
+                            <div class="row">
+                                <div class="col-lg-6 mb-3">
+                                    <label for="placa" class="form-label">Placa *</label>
+                                    <input type="text" class="form-control" id="placa" th:field="*{placa}" 
+                                           placeholder="ABC-1234" required>
+                                    <div th:if="${#fields.hasErrors('placa')}" class="text-danger">
+                                        <small th:errors="*{placa}"></small>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="status" class="form-label">Status</label>
+                                    <select class="form-select" id="status" th:field="*{status}">
+                                        <option value="DISPONIVEL">DISPONIVEL</option>
+                                        <option value="ALUGADO">ALUGADO</option>
+                                        <option value="MANUTENCAO">MANUTENCAO</option>
+                                        <option value="INDISPONIVEL">INDISPONIVEL</option>
+                                    </select>
+                                    <div th:if="${#fields.hasErrors('status')}" class="text-danger">
+                                        <small th:errors="*{status}"></small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-6 mb-3">
+                                    <label for="marca" class="form-label">Marca *</label>
+                                    <input type="text" class="form-control" id="marca" th:field="*{marca}" 
+                                           placeholder="Ex: Toyota" required>
+                                    <div th:if="${#fields.hasErrors('marca')}" class="text-danger">
+                                        <small th:errors="*{marca}"></small>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="modelo" class="form-label">Modelo *</label>
+                                    <input type="text" class="form-control" id="modelo" th:field="*{modelo}" 
+                                           placeholder="Ex: Corolla" required>
+                                    <div th:if="${#fields.hasErrors('modelo')}" class="text-danger">
+                                        <small th:errors="*{modelo}"></small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-4 mb-3">
+                                    <label for="ano" class="form-label">Ano *</label>
+                                    <input type="number" class="form-control" id="ano" th:field="*{ano}" 
+                                           placeholder="2020" min="1900" max="2030" required>
+                                    <div th:if="${#fields.hasErrors('ano')}" class="text-danger">
+                                        <small th:errors="*{ano}"></small>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 mb-3">
+                                    <label for="cor" class="form-label">Cor *</label>
+                                    <input type="text" class="form-control" id="cor" th:field="*{cor}" 
+                                           placeholder="Ex: Branco" required>
+                                    <div th:if="${#fields.hasErrors('cor')}" class="text-danger">
+                                        <small th:errors="*{cor}"></small>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 mb-3">
+                                    <label for="valorDiaria" class="form-label">Valor da Diária *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">R$</span>
+                                        <input type="number" class="form-control" id="valorDiaria" th:field="*{valorDiaria}" 
+                                               placeholder="0.00" step="0.01" min="0" required>
+                                    </div>
+                                    <div th:if="${#fields.hasErrors('valorDiaria')}" class="text-danger">
+                                        <small th:errors="*{valorDiaria}"></small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mt-4">
+                                <div class="col-lg-12 text-end">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-save"></i> 
+                                        <span th:text="${carro.id != null ? 'Atualizar' : 'Salvar'}">Salvar</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Máscara para placa
+        document.getElementById('placa').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+            if (value.length > 3) {
+                value = value.substring(0, 3) + '-' + value.substring(3, 7);
+            }
+            e.target.value = value;
+        });
+    </script>
+</body>
+</html>

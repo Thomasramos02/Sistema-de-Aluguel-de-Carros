@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novo Aluguel - Sistema de Aluguel de Carros</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        }
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            transition: border-color 0.3s ease;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .alert {
+            border-radius: 15px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-car"></i> BrawnRent
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/clientes">Clientes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/carros">Carros</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/alugueis">Aluguéis</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-lg-6">
+                <h1><i class="fas fa-calendar-plus text-primary"></i> Novo Aluguel</h1>
+                <p class="text-muted">Registre um novo aluguel de veículo</p>
+            </div>
+            <div class="col-lg-6 text-end">
+                <a href="/alugueis" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </a>
+            </div>
+        </div>
+
+        <!-- Alerts -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Form -->
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- CORREÇÃO: th:action com @{...} -->
+                        <form th:action="@{/alugueis}" th:object="${aluguel}" method="post">
+                            
+                            <div class="row">
+                                <div class="col-lg-6 mb-3">
+                                    <label for="clienteId" class="form-label">Cliente *</label>
+                                    <select class="form-select" id="clienteId" name="clienteId" required>
+                                        <option value="">Selecione um cliente</option>
+                                        <option th:each="cliente : ${clientes}" 
+                                                th:value="${cliente.id}" 
+                                                th:text="${cliente.nome + ' - ' + cliente.cpf}"></option>
+                                    </select>
+                                    <div th:if="${#fields.hasErrors('cliente')}" class="text-danger">
+                                        <small th:errors="*{cliente}"></small>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="carroId" class="form-label">Carro *</label>
+                                    <select class="form-select" id="carroId" name="carroId" required>
+                                        <option value="">Selecione um carro</option>
+                                        <option th:each="carro : ${carrosDisponiveis}" 
+                                                th:value="${carro.id}" 
+                                                th:text="${carro.marca + ' ' + carro.modelo + ' - ' + carro.placa + ' (R$ ' + #numbers.formatDecimal(carro.valorDiaria, 1, 2) + '/dia)'}"></option>
+                                    </select>
+                                    <div th:if="${#fields.hasErrors('carro')}" class="text-danger">
+                                        <small th:errors="*{carro}"></small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-6 mb-3">
+                                    <label for="dataInicio" class="form-label">Data de Início *</label>
+                                    <input type="datetime-local" class="form-control" id="dataInicio" th:field="*{dataInicio}" required>
+                                    <div th:if="${#fields.hasErrors('dataInicio')}" class="text-danger">
+                                        <small th:errors="*{dataInicio}"></small>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="dataFim" class="form-label">Data de Fim</label>
+                                    <input type="datetime-local" class="form-control" id="dataFim" th:field="*{dataFim}">
+                                    <div th:if="${#fields.hasErrors('dataFim')}" class="text-danger">
+                                        <small th:errors="*{dataFim}"></small>
+                                    </div>
+                                    <small class="text-muted">Deixe em branco para aluguel sem data de fim definida</small>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-12 mb-3">
+                                    <label for="observacoes" class="form-label">Observações</label>
+                                    <textarea class="form-control" id="observacoes" th:field="*{observacoes}" 
+                                              rows="3" placeholder="Observações adicionais sobre o aluguel"></textarea>
+                                    <div th:if="${#fields.hasErrors('observacoes')}" class="text-danger">
+                                        <small th:errors="*{observacoes}"></small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mt-4">
+                                <div class="col-lg-12 text-end">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-save"></i> Registrar Aluguel
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Definir data mínima como hoje
+        const hoje = new Date();
+        const dataMinima = hoje.toISOString().slice(0, 16);
+        document.getElementById('dataInicio').min = dataMinima;
+        document.getElementById('dataFim').min = dataMinima;
+
+        // Atualizar data mínima de fim quando data de início mudar
+        document.getElementById('dataInicio').addEventListener('change', function() {
+            document.getElementById('dataFim').min = this.value;
+        });
+    </script>
+</body>
+</html>

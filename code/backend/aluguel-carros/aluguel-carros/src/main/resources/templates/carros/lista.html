@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carros - Sistema de Aluguel de Carros</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        }
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .table {
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        .alert {
+            border-radius: 15px;
+        }
+        .status-badge {
+            font-size: 0.8rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-car"></i> BrawnRent
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/clientes">Clientes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/carros">Carros</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/alugueis">Aluguéis</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-lg-6">
+                <h1><i class="fas fa-car text-primary"></i> Carros</h1>
+                <p class="text-muted">Gerencie a frota de veículos</p>
+            </div>
+            <div class="col-lg-6 text-end">
+                <a href="/carros/novo" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Novo Carro
+                </a>
+            </div>
+        </div>
+
+        <!-- Alerts -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Search and Filter -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="get" action="/carros">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                <input type="text" class="form-control" name="busca" placeholder="Buscar por marca/modelo..." th:value="${param.busca}">
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <select name="status" class="form-select">
+                                <option value="">Todos os status</option>
+                                <option th:each="status : ${statusOptions}" 
+                                        th:value="${status}" 
+                                        th:text="${status}"
+                                        th:selected="${param.status == status}"></option>
+                            </select>
+                        </div>
+                        <div class="col-lg-3">
+                            <button type="submit" class="btn btn-outline-primary w-100">Filtrar</button>
+                        </div>
+                        <div class="col-lg-2">
+                            <a href="/carros/disponiveis" class="btn btn-success w-100">
+                                <i class="fas fa-check"></i> Disponíveis
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Carros Table -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-list"></i> Lista de Carros</h5>
+            </div>
+            <div class="card-body p-0">
+                <div th:if="${#lists.isEmpty(carros)}" class="text-center py-5">
+                    <i class="fas fa-car text-muted" style="font-size: 4rem;"></i>
+                    <h4 class="text-muted mt-3">Nenhum carro encontrado</h4>
+                    <p class="text-muted">Cadastre o primeiro carro para começar</p>
+                    <a href="/carros/novo" class="btn btn-primary">Cadastrar Carro</a>
+                </div>
+                
+                <div th:if="${!#lists.isEmpty(carros)}" class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Placa</th>
+                                <th>Marca</th>
+                                <th>Modelo</th>
+                                <th>Ano</th>
+                                <th>Cor</th>
+                                <th>Valor Diária</th>
+                                <th>Status</th>
+                                <th width="200">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="carro : ${carros}">
+                                <td>
+                                    <strong th:text="${carro.placa}"></strong>
+                                </td>
+                                <td th:text="${carro.marca}"></td>
+                                <td th:text="${carro.modelo}"></td>
+                                <td th:text="${carro.ano}"></td>
+                                <td th:text="${carro.cor}"></td>
+                                <td>
+                                    <span class="fw-bold text-success" th:text="${#numbers.formatDecimal(carro.valorDiaria, 1, 2)}">R$ 0,00</span>
+                                </td>
+                                <td>
+                                    <span th:if="${carro.status.name() == 'DISPONIVEL'}" 
+                                          class="badge status-badge bg-success" 
+                                          th:text="${carro.status}"></span>
+                                    <span th:if="${carro.status.name() == 'ALUGADO'}" 
+                                          class="badge status-badge bg-warning" 
+                                          th:text="${carro.status}"></span>
+                                    <span th:if="${carro.status.name() == 'MANUTENCAO'}" 
+                                          class="badge status-badge bg-info" 
+                                          th:text="${carro.status}"></span>
+                                    <span th:if="${carro.status.name() == 'INDISPONIVEL'}" 
+                                          class="badge status-badge bg-danger" 
+                                          th:text="${carro.status}"></span>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a th:href="@{/carros/{id}/editar(id=${carro.id})}" class="btn btn-sm btn-outline-warning" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                <i class="fas fa-cog"></i>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li th:each="status : ${statusOptions}">
+                                                    <form th:action="@{/carros/{id}/status(id=${carro.id})}" method="post" class="d-inline">
+                                                        <input type="hidden" name="status" th:value="${status}">
+                                                        <button type="submit" class="dropdown-item" th:text="${status}"></button>
+                                                    </form>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <form th:action="@{/carros/{id}/deletar(id=${carro.id})}" method="post" class="d-inline" 
+                                              onsubmit="return confirm('Tem certeza que deseja deletar este carro?')">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Deletar">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

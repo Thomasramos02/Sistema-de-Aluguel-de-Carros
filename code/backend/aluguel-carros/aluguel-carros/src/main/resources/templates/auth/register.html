@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - BrawnRent</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 20px 0;
+        }
+        .register-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        }
+        .form-control, .form-select {
+            border-radius: 15px;
+            border: 2px solid #e9ecef;
+            padding: 15px 20px;
+            transition: border-color 0.3s ease;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .alert {
+            border-radius: 15px;
+        }
+        .logo {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="register-card mx-auto">
+                    <!-- Logo -->
+                    <div class="text-center mb-4">
+                        <i class="fas fa-car logo"></i>
+                        <h2 class="fw-bold text-primary">BrawnRent</h2>
+                        <p class="text-muted">Criar Nova Conta</p>
+                    </div>
+
+                    <!-- Alerts -->
+                    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+
+                    <!-- Register Form -->
+                    <form th:action="@{/register}" th:object="${usuario}" method="post">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="nome" class="form-label">
+                                    <i class="fas fa-user"></i> Nome Completo *
+                                </label>
+                                <input type="text" class="form-control" id="nome" th:field="*{nome}" 
+                                       placeholder="Digite seu nome completo" required>
+                                <div th:if="${#fields.hasErrors('nome')}" class="text-danger">
+                                    <small th:errors="*{nome}"></small>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">
+                                    <i class="fas fa-envelope"></i> Email *
+                                </label>
+                                <input type="email" class="form-control" id="email" th:field="*{email}" 
+                                       placeholder="Digite seu email" required>
+                                <div th:if="${#fields.hasErrors('email')}" class="text-danger">
+                                    <small th:errors="*{email}"></small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="senha" class="form-label">
+                                    <i class="fas fa-lock"></i> Senha *
+                                </label>
+                                <input type="password" class="form-control" id="senha" th:field="*{senha}" 
+                                       placeholder="Digite sua senha" required>
+                                <div th:if="${#fields.hasErrors('senha')}" class="text-danger">
+                                    <small th:errors="*{senha}"></small>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="role" class="form-label">
+                                    <i class="fas fa-user-tag"></i> Tipo de Usuário
+                                </label>
+                                <select class="form-select" id="role" th:field="*{role}">
+                                    <option value="CLIENTE">Cliente</option>
+                                    <option value="FUNCIONARIO">Funcionário</option>
+                                </select>
+                                <div th:if="${#fields.hasErrors('role')}" class="text-danger">
+                                    <small th:errors="*{role}"></small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-user-plus"></i> Criar Conta
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Login Link -->
+                    <div class="text-center">
+                        <p class="text-muted">Já tem uma conta?</p>
+                        <a href="/login" class="btn btn-outline-primary">
+                            <i class="fas fa-sign-in-alt"></i> Fazer Login
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
