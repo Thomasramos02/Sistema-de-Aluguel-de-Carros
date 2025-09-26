@@ -58,41 +58,38 @@ public class AluguelController {
         return "alugueis/form";
     }
     
-    @PostMapping
-    public String criarAluguel(@RequestParam Long clienteId,
-                              @RequestParam Long carroId,
-                              @RequestParam LocalDateTime dataInicio,
-                              @RequestParam(required = false) LocalDateTime dataFim,
-                              @RequestParam(required = false) String observacoes,
-                              RedirectAttributes redirectAttributes) {
-        
-        try {
-            // Buscar cliente e carro pelos IDs
-            Cliente cliente = clienteService.buscarPorId(clienteId)
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
-            
-            Carro carro = carroService.buscarPorId(carroId)
-                .orElseThrow(() -> new RuntimeException("Carro não encontrado"));
-            
-            // Criar objeto aluguel
-            Aluguel aluguel = Aluguel.builder()
-                .cliente(cliente)
-                .carro(carro)
-                .dataInicio(dataInicio)
-                .dataFim(dataFim)
-                .observacoes(observacoes)
-                .build();
-            
-            aluguelService.criarAluguel(aluguel);
-            redirectAttributes.addFlashAttribute("success", "Aluguel criado com sucesso!");
-            return "redirect:/alugueis";
-        } catch (RuntimeException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-            redirectAttributes.addFlashAttribute("clientes", clienteService.listarTodos());
-            redirectAttributes.addFlashAttribute("carrosDisponiveis", carroService.buscarDisponiveis());
-            return "redirect:/alugueis/novo";
-        }
+   @PostMapping
+public String criarAluguel(@RequestParam Long clienteId,
+                            @RequestParam Long carroId,
+                            @ModelAttribute @Valid Aluguel aluguel,
+                            BindingResult result,
+                            RedirectAttributes redirectAttributes) {
+
+    if (result.hasErrors()) {
+        redirectAttributes.addFlashAttribute("error", "Erro ao criar aluguel!");
+        return "redirect:/alugueis/novo";
     }
+
+    try {
+        Cliente cliente = clienteService.buscarPorId(clienteId)
+            .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+
+        Carro carro = carroService.buscarPorId(carroId)
+            .orElseThrow(() -> new RuntimeException("Carro não encontrado"));
+
+        aluguel.setCliente(cliente);
+        aluguel.setCarro(carro);
+        aluguelService.criarAluguel(aluguel);
+
+        redirectAttributes.addFlashAttribute("success", "Aluguel criado com sucesso!");
+        return "redirect:/alugueis";
+
+    } catch (RuntimeException e) {
+        redirectAttributes.addFlashAttribute("error", e.getMessage());
+        return "redirect:/alugueis/novo";
+    }
+}
+
     
     @GetMapping("/{id}")
     public String visualizarAluguel(@PathVariable Long id, Model model) {
