@@ -2,12 +2,8 @@
 
 <div align="center">
 
-**Sistema completo para gestão de aluguel de veículos com controle de clientes, frota e contratos**
 
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-2.7.0-green.svg)](https://spring.io/projects/spring-boot)
-[![Java](https://img.shields.io/badge/Java-11-orange.svg)](https://www.oracle.com/java/)
-[![Thymeleaf](https://img.shields.io/badge/Thymeleaf-3.0-blue.svg)](https://www.thymeleaf.org/)
-[![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-purple.svg)](https://getbootstrap.com/)
+
 
 </div>
 
@@ -53,8 +49,8 @@ O **BrawnRent** é um sistema web para gerenciamento de aluguel de carros, ofere
 ## 🛠 Tecnologias
 
 ### Backend
-- **Java 11** - Linguagem principal
-- **Spring Boot 2.7.0** - Framework web
+- **Java** - Linguagem principal
+- **Spring Boot** - Framework web
 - **Spring Security** - Autenticação
 - **Spring Data JPA** - Persistência
 - **Hibernate** - ORM
@@ -62,8 +58,8 @@ O **BrawnRent** é um sistema web para gerenciamento de aluguel de carros, ofere
 
 ### Frontend
 - **Thymeleaf** - Templates
-- **Bootstrap 5.3.0** - Interface responsiva
-- **Font Awesome 6.0** - Ícones
+- **Bootstrap** - Interface responsiva
+- **Font Awesome** - Ícones
 - **CSS3** - Estilização customizada
 
 ### Banco de Dados
@@ -74,8 +70,8 @@ O **BrawnRent** é um sistema web para gerenciamento de aluguel de carros, ofere
 ## 🚀 Como Executar
 
 ### Pré-requisitos
-- Java 11 ou superior
-- Maven 3.6 ou superior
+- Java 21 ou superior
+
 
 ### Instalação
 ```bash
@@ -122,7 +118,7 @@ mvn spring-boot:run
 
 <div align="center">
 
-**Desenvolvido com ❤️ para a disciplina de Laboratório de Desenvolvimento de Software**
+
 
 *4° Período - Engenharia de Software*
 
