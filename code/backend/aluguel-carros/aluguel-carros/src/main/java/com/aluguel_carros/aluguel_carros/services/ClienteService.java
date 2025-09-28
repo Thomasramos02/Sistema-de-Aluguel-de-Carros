@@ -3,6 +3,7 @@ package com.aluguel_carros.aluguel_carros.services;
 import com.aluguel_carros.aluguel_carros.model.Cliente;
 import com.aluguel_carros.aluguel_carros.repositories.ClienteRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,7 @@ import java.util.Optional;
 public class ClienteService {
     
     private final ClienteRepository clienteRepository;
+    private final PasswordEncoder passwordEncoder;
     
     public Cliente salvar(Cliente cliente) {
         // Validar unicidade de email, CPF e RG
@@ -29,6 +31,9 @@ public class ClienteService {
         if (clienteRepository.existsByRg(cliente.getRg())) {
             throw new RuntimeException("Já existe um cliente com este RG: " + cliente.getRg());
         }
+        
+        // Criptografar senha
+        cliente.setSenha(passwordEncoder.encode(cliente.getSenha()));
         
         return clienteRepository.save(cliente);
     }
@@ -53,6 +58,13 @@ public class ClienteService {
         if (!clienteExistente.getRg().equals(cliente.getRg()) && 
             clienteRepository.existsByRg(cliente.getRg())) {
             throw new RuntimeException("Já existe um cliente com este RG: " + cliente.getRg());
+        }
+        
+        // Se a senha foi alterada, criptografar
+        if (cliente.getSenha() != null && !cliente.getSenha().isEmpty()) {
+            cliente.setSenha(passwordEncoder.encode(cliente.getSenha()));
+        } else {
+            cliente.setSenha(clienteExistente.getSenha());
         }
         
         return clienteRepository.save(cliente);

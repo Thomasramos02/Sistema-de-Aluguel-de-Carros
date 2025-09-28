@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Perfil - Sistema de Aluguel de Carros</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h4><i class="fas fa-user-edit"></i> Editar Perfil</h4>
+                    </div>
+                    <div class="card-body">
+                        <!-- Alerts -->
+                        <div th:if="${success}" class="alert alert-success alert-dismissible fade show">
+                            <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show">
+                            <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+
+                        <form th:action="@{/profile/cliente/editar}" th:object="${cliente}" method="post">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="nome" class="form-label">Nome *</label>
+                                    <input type="text" class="form-control" id="nome" th:field="*{nome}" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="email" class="form-label">Email *</label>
+                                    <input type="email" class="form-control" id="email" th:field="*{email}" required>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="telefone" class="form-label">Telefone *</label>
+                                    <input type="text" class="form-control" id="telefone" th:field="*{telefone}" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="cpf" class="form-label">CPF *</label>
+                                    <input type="text" class="form-control" id="cpf" th:field="*{cpf}" required>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="rg" class="form-label">RG *</label>
+                                    <input type="text" class="form-control" id="rg" th:field="*{rg}" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="profissao" class="form-label">Profissão *</label>
+                                    <input type="text" class="form-control" id="profissao" th:field="*{profissao}" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="endereco" class="form-label">Endereço *</label>
+                                <input type="text" class="form-control" id="endereco" th:field="*{endereco}" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="rendimentosAuferidos" class="form-label">Rendimentos Auferidos *</label>
+                                <input type="number" step="0.01" class="form-control" id="rendimentosAuferidos" th:field="*{rendimentosAuferidos}" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="senha" class="form-label">Nova Senha (deixe em branco para manter a atual)</label>
+                                <input type="password" class="form-control" id="senha" name="senha">
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <a href="/profile" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> Voltar
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Salvar Alterações
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

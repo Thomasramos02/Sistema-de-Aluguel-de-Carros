@@ -3,6 +3,7 @@ package com.aluguel_carros.aluguel_carros.controller;
 import com.aluguel_carros.aluguel_carros.model.Cliente;
 import com.aluguel_carros.aluguel_carros.services.ClienteService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,6 +21,7 @@ public class ClienteController {
     private final ClienteService clienteService;
     
     @GetMapping
+    @PreAuthorize("hasRole('FUNCIONARIO') or hasRole('ADMIN')")
     public String listarClientes(Model model, 
                                 @RequestParam(required = false) String busca) {
         List<Cliente> clientes;
@@ -35,12 +37,14 @@ public class ClienteController {
     }
     
     @GetMapping("/novo")
+    @PreAuthorize("hasRole('FUNCIONARIO') or hasRole('ADMIN')")
     public String novoCliente(Model model) {
         model.addAttribute("cliente", new Cliente());
         return "clientes/form";
     }
     
     @PostMapping
+    @PreAuthorize("hasRole('FUNCIONARIO') or hasRole('ADMIN')")
     public String salvarCliente(@Valid @ModelAttribute Cliente cliente, 
                                BindingResult result, 
                                RedirectAttributes redirectAttributes) {
@@ -59,6 +63,7 @@ public class ClienteController {
     }
     
     @GetMapping("/{id}/editar")
+    @PreAuthorize("hasRole('FUNCIONARIO') or hasRole('ADMIN')")
     public String editarCliente(@PathVariable Long id, Model model) {
         Cliente cliente = clienteService.buscarPorId(id)
             .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
@@ -68,6 +73,7 @@ public class ClienteController {
     }
     
     @PostMapping("/{id}")
+    @PreAuthorize("hasRole('FUNCIONARIO') or hasRole('ADMIN')")
     public String atualizarCliente(@PathVariable Long id, 
                                   @Valid @ModelAttribute Cliente cliente, 
                                   BindingResult result, 
@@ -99,6 +105,7 @@ public class ClienteController {
     }
     
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('FUNCIONARIO') or hasRole('ADMIN')")
     public String visualizarCliente(@PathVariable Long id, Model model) {
         Cliente cliente = clienteService.buscarPorId(id)
             .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
@@ -108,6 +115,7 @@ public class ClienteController {
     }
     
     @GetMapping("/buscar")
+    @PreAuthorize("hasRole('FUNCIONARIO') or hasRole('ADMIN')")
     public String buscarClientes(@RequestParam String termo, Model model) {
         List<Cliente> clientes = clienteService.buscarPorNome(termo);
         model.addAttribute("clientes", clientes);

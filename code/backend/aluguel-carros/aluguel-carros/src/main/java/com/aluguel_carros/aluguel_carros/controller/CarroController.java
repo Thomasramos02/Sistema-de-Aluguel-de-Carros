@@ -3,6 +3,7 @@ package com.aluguel_carros.aluguel_carros.controller;
 import com.aluguel_carros.aluguel_carros.model.Carro;
 import com.aluguel_carros.aluguel_carros.services.CarroService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -45,15 +46,17 @@ public class CarroController {
     }
     
     @GetMapping("/novo")
+    @PreAuthorize("hasRole('FUNCIONARIO') or hasRole('ADMIN')")
     public String novoCarro(Model model) {
         model.addAttribute("carro", new Carro());
         return "carros/form";
     }
     
     @PostMapping
+    @PreAuthorize("hasRole('FUNCIONARIO') or hasRole('ADMIN')")
     public String salvarCarro(@Valid @ModelAttribute Carro carro, 
-                              BindingResult result, 
-                              RedirectAttributes redirectAttributes) {
+                             BindingResult result, 
+                             RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             return "carros/form";
         }
@@ -69,6 +72,7 @@ public class CarroController {
     }
     
     @GetMapping("/{id}/editar")
+    @PreAuthorize("hasRole('FUNCIONARIO') or hasRole('ADMIN')")
     public String editarCarro(@PathVariable Long id, Model model) {
         Carro carro = carroService.buscarPorId(id)
             .orElseThrow(() -> new RuntimeException("Carro não encontrado"));
@@ -78,6 +82,7 @@ public class CarroController {
     }
     
     @PostMapping("/{id}")
+    @PreAuthorize("hasRole('FUNCIONARIO') or hasRole('ADMIN')")
     public String atualizarCarro(@PathVariable Long id, 
                                 @Valid @ModelAttribute Carro carro, 
                                 BindingResult result, 
@@ -98,6 +103,7 @@ public class CarroController {
     }
     
     @PostMapping("/{id}/deletar")
+    @PreAuthorize("hasRole('FUNCIONARIO') or hasRole('ADMIN')")
     public String deletarCarro(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             carroService.deletar(id);
@@ -109,6 +115,7 @@ public class CarroController {
     }
     
     @PostMapping("/{id}/status")
+    @PreAuthorize("hasRole('FUNCIONARIO') or hasRole('ADMIN')")
     public String alterarStatus(@PathVariable Long id, 
                                @RequestParam Carro.StatusCarro status, 
                                RedirectAttributes redirectAttributes) {

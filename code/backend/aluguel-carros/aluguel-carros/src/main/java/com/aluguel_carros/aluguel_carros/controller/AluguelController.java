@@ -7,6 +7,10 @@ import com.aluguel_carros.aluguel_carros.services.AluguelService;
 import com.aluguel_carros.aluguel_carros.services.CarroService;
 import com.aluguel_carros.aluguel_carros.services.ClienteService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,6 +24,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/alugueis")
 @RequiredArgsConstructor
+@Slf4j
 public class AluguelController {
     
     private final AluguelService aluguelService;
@@ -49,42 +54,78 @@ public class AluguelController {
     
     @GetMapping("/novo")
     public String novoAluguel(Model model) {
-        Aluguel aluguel = new Aluguel();
-        aluguel.setDataInicio(LocalDateTime.now());
-        
-        model.addAttribute("aluguel", aluguel);
-        model.addAttribute("clientes", clienteService.listarTodos());
-        model.addAttribute("carrosDisponiveis", carroService.buscarDisponiveis());
-        return "alugueis/form";
+        try {
+            log.info("Iniciando criação de novo aluguel...");
+            
+            // Criar aluguel básico
+            Aluguel aluguel = new Aluguel();
+            aluguel.setDataInicio(LocalDateTime.now());
+            model.addAttribute("aluguel", aluguel);
+            log.info("Aluguel criado com sucesso");
+            
+            // Buscar carros disponíveis com tratamento de erro
+            try {
+                log.info("Buscando carros disponíveis...");
+                List<Carro> carrosDisponiveis = carroService.buscarDisponiveis();
+                log.info("Encontrados {} carros disponíveis", carrosDisponiveis.size());
+                model.addAttribute("carrosDisponiveis", carrosDisponiveis);
+            } catch (Exception e) {
+                log.error("Erro ao buscar carros disponíveis", e);
+                model.addAttribute("carrosDisponiveis", List.of());
+                model.addAttribute("error", "Erro ao carregar carros: " + e.getMessage());
+            }
+            
+            log.info("Retornando template alugueis/form-simple");
+            return "alugueis/form-simple";
+            
+        } catch (Exception e) {
+            log.error("Erro crítico ao criar novo aluguel", e);
+            model.addAttribute("error", "Erro interno: " + e.getMessage());
+            return "error";
+        }
     }
     
    @PostMapping
-public String criarAluguel(@RequestParam Long clienteId,
-                            @RequestParam Long carroId,
-                            @ModelAttribute @Valid Aluguel aluguel,
-                            BindingResult result,
+public String criarAluguel(@RequestParam Long carroId,
+                            @RequestParam String dataInicio,
+                            @RequestParam String dataFim,
+                            @RequestParam(required = false) String observacoes,
                             RedirectAttributes redirectAttributes) {
 
-    if (result.hasErrors()) {
-        redirectAttributes.addFlashAttribute("error", "Erro ao criar aluguel!");
-        return "redirect:/alugueis/novo";
-    }
-
     try {
-        Cliente cliente = clienteService.buscarPorId(clienteId)
-            .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+        log.info("Iniciando criação de aluguel...");
+        
+        // Obter cliente logado automaticamente
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        Cliente cliente = clienteService.buscarPorEmail(email)
+            .orElseThrow(() -> new RuntimeException("Cliente não encontrado. Faça login primeiro."));
 
         Carro carro = carroService.buscarPorId(carroId)
             .orElseThrow(() -> new RuntimeException("Carro não encontrado"));
 
-        aluguel.setCliente(cliente);
-        aluguel.setCarro(carro);
+        // Converter strings para LocalDateTime
+        LocalDateTime inicio = LocalDateTime.parse(dataInicio);
+        LocalDateTime fim = LocalDateTime.parse(dataFim);
+
+        // Criar aluguel com todos os campos necessários
+        Aluguel aluguel = Aluguel.builder()
+            .cliente(cliente)
+            .carro(carro)
+            .dataInicio(inicio)
+            .dataFim(fim)
+            .observacoes(observacoes)
+            .status(Aluguel.StatusAluguel.ATIVO)
+            .build();
+
+        log.info("Criando aluguel para cliente: {} e carro: {}", cliente.getNome(), carro.getPlaca());
         aluguelService.criarAluguel(aluguel);
 
         redirectAttributes.addFlashAttribute("success", "Aluguel criado com sucesso!");
         return "redirect:/alugueis";
 
     } catch (RuntimeException e) {
+        log.error("Erro ao criar aluguel", e);
         redirectAttributes.addFlashAttribute("error", e.getMessage());
         return "redirect:/alugueis/novo";
     }
@@ -101,6 +142,7 @@ public String criarAluguel(@RequestParam Long clienteId,
     }
     
     @PostMapping("/{id}/finalizar")
+    @PreAuthorize("hasRole('FUNCIONARIO') or hasRole('ADMIN')")
     public String finalizarAluguel(@PathVariable Long id, 
                                    RedirectAttributes redirectAttributes) {
         try {
@@ -113,6 +155,7 @@ public String criarAluguel(@RequestParam Long clienteId,
     }
     
     @PostMapping("/{id}/cancelar")
+    @PreAuthorize("hasRole('FUNCIONARIO') or hasRole('ADMIN')")
     public String cancelarAluguel(@PathVariable Long id, 
                                   RedirectAttributes redirectAttributes) {
         try {

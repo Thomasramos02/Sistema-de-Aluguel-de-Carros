@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Pedido - Sistema de Aluguel de Carros</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-car me-2"></i>Sistema de Aluguel de Carros
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/agentes/pedidos">
+                    <i class="fas fa-clipboard-list me-1"></i>Pedidos
+                </a>
+                <a class="nav-link" href="/carros">
+                    <i class="fas fa-car me-1"></i>Carros
+                </a>
+                <a class="nav-link" href="/logout">
+                    <i class="fas fa-sign-out-alt me-1"></i>Sair
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header bg-success text-white">
+                        <h4 class="mb-0"><i class="fas fa-file-alt me-2"></i>Detalhes do Pedido</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="text-muted">Informações do Cliente</h6>
+                                <p><strong>Nome:</strong> <span th:text="${pedido.cliente.nome}"></span></p>
+                                <p><strong>Email:</strong> <span th:text="${pedido.cliente.email}"></span></p>
+                                <p><strong>Telefone:</strong> <span th:text="${pedido.cliente.telefone}"></span></p>
+                                <p><strong>CPF:</strong> <span th:text="${pedido.cliente.cpf}"></span></p>
+                                <p><strong>Profissão:</strong> <span th:text="${pedido.cliente.profissao}"></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="text-muted">Informações do Carro</h6>
+                                <p><strong>Marca:</strong> <span th:text="${pedido.carro.marca}"></span></p>
+                                <p><strong>Modelo:</strong> <span th:text="${pedido.carro.modelo}"></span></p>
+                                <p><strong>Placa:</strong> <span th:text="${pedido.carro.placa}"></span></p>
+                                <p><strong>Cor:</strong> <span th:text="${pedido.carro.cor}"></span></p>
+                                <p><strong>Ano:</strong> <span th:text="${pedido.carro.ano}"></span></p>
+                                <p><strong>Valor Diária:</strong> <span class="text-success" th:text="'R$ ' + ${#numbers.formatDecimal(pedido.carro.valorDiaria, 1, 2)}"></span></p>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="text-muted">Período do Aluguel</h6>
+                                <p><strong>Data Início:</strong> <span th:text="${#temporals.format(pedido.dataInicio, 'dd/MM/yyyy HH:mm')}"></span></p>
+                                <p><strong>Data Fim:</strong> <span th:text="${#temporals.format(pedido.dataFim, 'dd/MM/yyyy HH:mm')}"></span></p>
+                                <p><strong>Valor Total:</strong> <span class="text-success fs-5" th:text="'R$ ' + ${#numbers.formatDecimal(pedido.valorTotal, 1, 2)}"></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="text-muted">Status do Pedido</h6>
+                                <div th:switch="${pedido.status}">
+                                    <span th:case="PENDENTE" class="badge bg-warning fs-6">
+                                        <i class="fas fa-clock me-1"></i>Pendente de Análise
+                                    </span>
+                                    <span th:case="APROVADO" class="badge bg-success fs-6">
+                                        <i class="fas fa-check me-1"></i>Aprovado
+                                    </span>
+                                    <span th:case="NEGADO" class="badge bg-danger fs-6">
+                                        <i class="fas fa-times me-1"></i>Negado
+                                    </span>
+                                </div>
+                                <p class="mt-2"><strong>Data Solicitação:</strong> <span th:text="${#temporals.format(pedido.dataSolicitacao, 'dd/MM/yyyy HH:mm')}"></span></p>
+                                <p th:if="${pedido.dataAnalise}"><strong>Data Análise:</strong> <span th:text="${#temporals.format(pedido.dataAnalise, 'dd/MM/yyyy HH:mm')}"></span></p>
+                            </div>
+                        </div>
+
+                        <div th:if="${pedido.observacoesCliente}" class="mt-3">
+                            <h6 class="text-muted">Observações do Cliente</h6>
+                            <div class="alert alert-info">
+                                <i class="fas fa-comment me-2"></i>
+                                <span th:text="${pedido.observacoesCliente}"></span>
+                            </div>
+                        </div>
+
+                        <div th:if="${pedido.observacoesAgente}" class="mt-3">
+                            <h6 class="text-muted">Suas Observações</h6>
+                            <div class="alert alert-secondary">
+                                <i class="fas fa-comment-dots me-2"></i>
+                                <span th:text="${pedido.observacoesAgente}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card shadow">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Análise</h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:switch="${pedido.status}">
+                            <div th:case="PENDENTE">
+                                <p class="card-text">
+                                    <i class="fas fa-clock me-2 text-warning"></i>
+                                    <strong>Status:</strong> Pedido aguardando análise.
+                                </p>
+                                <p class="card-text">
+                                    <i class="fas fa-exclamation-triangle me-2 text-warning"></i>
+                                    <strong>Atenção:</strong> Verifique a disponibilidade do carro e os dados do cliente.
+                                </p>
+                            </div>
+                            <div th:case="APROVADO">
+                                <p class="card-text">
+                                    <i class="fas fa-check-circle me-2 text-success"></i>
+                                    <strong>Status:</strong> Pedido aprovado com sucesso!
+                                </p>
+                                <p class="card-text">
+                                    <i class="fas fa-car me-2 text-primary"></i>
+                                    <strong>Resultado:</strong> O aluguel foi criado e o carro está alugado.
+                                </p>
+                            </div>
+                            <div th:case="NEGADO">
+                                <p class="card-text">
+                                    <i class="fas fa-times-circle me-2 text-danger"></i>
+                                    <strong>Status:</strong> Pedido negado.
+                                </p>
+                                <p class="card-text">
+                                    <i class="fas fa-info-circle me-2 text-info"></i>
+                                    <strong>Motivo:</strong> Verifique as observações do agente.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow mt-3" th:if="${pedido.status.name() == 'PENDENTE'}">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0"><i class="fas fa-tools me-2"></i>Ações</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-success" 
+                                    data-bs-toggle="modal" data-bs-target="#aprovarModal">
+                                <i class="fas fa-check me-2"></i>Aprovar Pedido
+                            </button>
+                            <button type="button" class="btn btn-danger" 
+                                    data-bs-toggle="modal" data-bs-target="#negarModal">
+                                <i class="fas fa-times me-2"></i>Negar Pedido
+                            </button>
+                            <a href="/agentes/pedidos" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Voltar aos Pedidos
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow mt-3" th:unless="${pedido.status.name() == 'PENDENTE'}">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0"><i class="fas fa-tools me-2"></i>Ações</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a href="/agentes/pedidos" class="btn btn-outline-primary">
+                                <i class="fas fa-arrow-left me-2"></i>Voltar aos Pedidos
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Aprovar -->
+    <div class="modal fade" id="aprovarModal" tabindex="-1" th:if="${pedido.status.name() == 'PENDENTE'}">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title"><i class="fas fa-check me-2"></i>Aprovar Pedido</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form th:action="@{/agentes/pedidos/{id}/aprovar(id=${pedido.id})}" method="post">
+                    <div class="modal-body">
+                        <p>Tem certeza que deseja <strong>aprovar</strong> este pedido?</p>
+                        <div class="alert alert-info">
+                            <strong>Cliente:</strong> <span th:text="${pedido.cliente.nome}"></span><br>
+                            <strong>Carro:</strong> <span th:text="${pedido.carro.marca + ' ' + pedido.carro.modelo}"></span><br>
+                            <strong>Valor:</strong> <span th:text="'R$ ' + ${#numbers.formatDecimal(pedido.valorTotal, 1, 2)}"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="observacoesAprovar" class="form-label">Observações (opcional)</label>
+                            <textarea class="form-control" id="observacoesAprovar" name="observacoesAgente" rows="3" 
+                                      placeholder="Observações sobre a aprovação..."></textarea>
+                        </div>
+                        <input type="hidden" name="agenteId" th:value="${agenteId}">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-check me-2"></i>Aprovar Pedido
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Negar -->
+    <div class="modal fade" id="negarModal" tabindex="-1" th:if="${pedido.status.name() == 'PENDENTE'}">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="fas fa-times me-2"></i>Negar Pedido</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form th:action="@{/agentes/pedidos/{id}/negar(id=${pedido.id})}" method="post">
+                    <div class="modal-body">
+                        <p>Tem certeza que deseja <strong>negar</strong> este pedido?</p>
+                        <div class="alert alert-warning">
+                            <strong>Cliente:</strong> <span th:text="${pedido.cliente.nome}"></span><br>
+                            <strong>Carro:</strong> <span th:text="${pedido.carro.marca + ' ' + pedido.carro.modelo}"></span><br>
+                            <strong>Valor:</strong> <span th:text="'R$ ' + ${#numbers.formatDecimal(pedido.valorTotal, 1, 2)}"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="observacoesNegar" class="form-label">Motivo da Negação *</label>
+                            <textarea class="form-control" id="observacoesNegar" name="observacoesAgente" rows="3" 
+                                      placeholder="Explique o motivo da negação..." required></textarea>
+                        </div>
+                        <input type="hidden" name="agenteId" th:value="${agenteId}">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-times me-2"></i>Negar Pedido
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

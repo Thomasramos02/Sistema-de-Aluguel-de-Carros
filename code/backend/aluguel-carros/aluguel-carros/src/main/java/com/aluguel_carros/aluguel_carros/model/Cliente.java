@@ -53,6 +53,9 @@ public class Cliente extends Usuario {
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Aluguel> alugueis;
     
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<PedidoAluguel> pedidosAluguel;
+    
     public static final int MAX_PROFISSAO = 3;
     
     @PrePersist

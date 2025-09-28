@@ -60,7 +60,7 @@
                     <div class="text-center mb-4">
                         <i class="fas fa-car logo"></i>
                         <h2 class="fw-bold text-primary">BrawnRent</h2>
-                        <p class="text-muted">Criar Nova Conta</p>
+                        <p class="text-muted">Escolha o tipo de cadastro</p>
                     </div>
 
                     <!-- Alerts -->
@@ -70,61 +70,36 @@
                     </div>
 
                     <!-- Register Form -->
-                    <form th:action="@{/register}" th:object="${usuario}" method="post">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="nome" class="form-label">
-                                    <i class="fas fa-user"></i> Nome Completo *
-                                </label>
-                                <input type="text" class="form-control" id="nome" th:field="*{nome}" 
-                                       placeholder="Digite seu nome completo" required>
-                                <div th:if="${#fields.hasErrors('nome')}" class="text-danger">
-                                    <small th:errors="*{nome}"></small>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="email" class="form-label">
-                                    <i class="fas fa-envelope"></i> Email *
-                                </label>
-                                <input type="email" class="form-control" id="email" th:field="*{email}" 
-                                       placeholder="Digite seu email" required>
-                                <div th:if="${#fields.hasErrors('email')}" class="text-danger">
-                                    <small th:errors="*{email}"></small>
+                    <div class="text-center mb-4">
+                        <h4 class="text-primary">Escolha o tipo de cadastro:</h4>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-user fa-3x text-primary mb-3"></i>
+                                    <h5 class="card-title">Cliente</h5>
+                                    <p class="card-text">Cadastro completo com todos os dados pessoais</p>
+                                    <a href="/register/cliente" class="btn btn-primary">
+                                        <i class="fas fa-user-plus"></i> Cadastrar Cliente
+                                    </a>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="senha" class="form-label">
-                                    <i class="fas fa-lock"></i> Senha *
-                                </label>
-                                <input type="password" class="form-control" id="senha" th:field="*{senha}" 
-                                       placeholder="Digite sua senha" required>
-                                <div th:if="${#fields.hasErrors('senha')}" class="text-danger">
-                                    <small th:errors="*{senha}"></small>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="role" class="form-label">
-                                    <i class="fas fa-user-tag"></i> Tipo de Usuário
-                                </label>
-                                <select class="form-select" id="role" th:field="*{role}">
-                                    <option value="CLIENTE">Cliente</option>
-                                    <option value="FUNCIONARIO">Funcionário</option>
-                                </select>
-                                <div th:if="${#fields.hasErrors('role')}" class="text-danger">
-                                    <small th:errors="*{role}"></small>
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-user-tie fa-3x text-success mb-3"></i>
+                                    <h5 class="card-title">Agente</h5>
+                                    <p class="card-text">Cadastro para funcionários da empresa</p>
+                                    <a href="/register/agente" class="btn btn-success">
+                                        <i class="fas fa-user-tie"></i> Cadastrar Agente
+                                    </a>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="d-grid mb-3">
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="fas fa-user-plus"></i> Criar Conta
-                            </button>
-                        </div>
-                    </form>
+                    </div>
 
                     <!-- Login Link -->
                     <div class="text-center">

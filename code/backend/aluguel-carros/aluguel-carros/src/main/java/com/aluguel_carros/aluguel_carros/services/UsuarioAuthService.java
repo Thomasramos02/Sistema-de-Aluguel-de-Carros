@@ -3,9 +3,6 @@ package com.aluguel_carros.aluguel_carros.services;
 import com.aluguel_carros.aluguel_carros.model.UsuarioAuth;
 import com.aluguel_carros.aluguel_carros.repositories.UsuarioAuthRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,16 +13,10 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class UsuarioAuthService implements UserDetailsService {
+public class UsuarioAuthService {
     
     private final UsuarioAuthRepository usuarioAuthRepository;
     private final PasswordEncoder passwordEncoder;
-    
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return usuarioAuthRepository.findByEmailAndAtivoTrue(email)
-            .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + email));
-    }
     
     public UsuarioAuth salvar(UsuarioAuth usuario) {
         if (usuarioAuthRepository.existsByEmail(usuario.getEmail())) {
