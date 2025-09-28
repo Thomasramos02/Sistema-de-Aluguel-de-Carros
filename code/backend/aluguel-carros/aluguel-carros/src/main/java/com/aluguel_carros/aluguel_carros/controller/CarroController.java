@@ -22,6 +22,7 @@ public class CarroController {
     private final CarroService carroService;
     
     @GetMapping
+    @PreAuthorize("hasRole('FUNCIONARIO') or hasRole('ADMIN')")
     public String listarCarros(Model model, 
                               @RequestParam(required = false) String busca,
                               @RequestParam(required = false) String status) {
@@ -133,5 +134,12 @@ public class CarroController {
         List<Carro> carros = carroService.buscarDisponiveis();
         model.addAttribute("carros", carros);
         return "carros/disponiveis";
+    }
+    
+    @GetMapping("/visualizar")
+    public String visualizarCarros(Model model) {
+        List<Carro> carros = carroService.buscarDisponiveis();
+        model.addAttribute("carros", carros);
+        return "carros/visualizar";
     }
 }

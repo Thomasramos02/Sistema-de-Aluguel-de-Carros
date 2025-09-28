@@ -94,6 +94,7 @@ public class ClienteController {
     }
     
     @PostMapping("/{id}/deletar")
+    @PreAuthorize("hasRole('FUNCIONARIO') or hasRole('ADMIN')")
     public String deletarCliente(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             clienteService.deletar(id);

@@ -32,6 +32,7 @@ public class AluguelController {
     private final CarroService carroService;
     
     @GetMapping
+    @PreAuthorize("hasRole('FUNCIONARIO') or hasRole('ADMIN')")
     public String listarAlugueis(Model model, 
                                 @RequestParam(required = false) String status) {
         List<Aluguel> alugueis;
@@ -178,14 +179,24 @@ public String criarAluguel(@RequestParam Long carroId,
         return "alugueis/por-cliente";
     }
     
-    @GetMapping("/carro/{carroId}")
-    public String alugueisPorCarro(@PathVariable Long carroId, Model model) {
-        List<Aluguel> alugueis = aluguelService.buscarPorCarro(carroId);
-        Carro carro = carroService.buscarPorId(carroId)
-            .orElseThrow(() -> new RuntimeException("Carro não encontrado"));
-        
-        model.addAttribute("alugueis", alugueis);
-        model.addAttribute("carro", carro);
-        return "alugueis/por-carro";
+    @GetMapping("/meus-alugueis")
+    public String meusAlugueis(Model model) {
+        try {
+            // Obter cliente logado automaticamente
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String email = auth.getName();
+            Cliente cliente = clienteService.buscarPorEmail(email)
+                .orElseThrow(() -> new RuntimeException("Cliente não encontrado. Faça login primeiro."));
+            
+            List<Aluguel> alugueis = aluguelService.buscarPorCliente(cliente.getId());
+            model.addAttribute("alugueis", alugueis);
+            model.addAttribute("cliente", cliente);
+            return "alugueis/meus-alugueis";
+            
+        } catch (RuntimeException e) {
+            log.error("Erro ao buscar aluguéis do cliente", e);
+            model.addAttribute("error", e.getMessage());
+            return "error";
+        }
     }
 }

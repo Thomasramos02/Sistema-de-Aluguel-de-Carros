@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bem-vindo - BrawnRent</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --success-color: #28a745;
+            --info-color: #17a2b8;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .welcome-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .welcome-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .user-info-card {
+            background: rgba(255,255,255,0.15);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 20px auto;
+            max-width: 400px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+        }
+
+        .user-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .user-email {
+            opacity: 0.8;
+            font-size: 1rem;
+        }
+
+        .content-section {
+            flex: 1;
+            padding: 40px 0;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .stat-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .stat-icon.carros {
+            background: linear-gradient(135deg, var(--success-color), #20c997);
+        }
+
+        .stat-icon.alugueis {
+            background: linear-gradient(135deg, var(--info-color), #6f42c1);
+        }
+
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .actions-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .action-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px 25px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: none;
+            height: 100%;
+        }
+
+        .action-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .action-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .action-icon.ver-carros {
+            background: linear-gradient(135deg, var(--success-color), #20c997);
+        }
+
+        .action-icon.meus-alugueis {
+            background: linear-gradient(135deg, var(--info-color), #6f42c1);
+        }
+
+        .action-icon.meu-perfil {
+            background: linear-gradient(135deg, var(--warning-color), #fd7e14);
+        }
+
+        .action-icon.sair {
+            background: linear-gradient(135deg, var(--danger-color), #e83e8c);
+        }
+
+        .action-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 15px;
+        }
+
+        .action-description {
+            color: #6c757d;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .btn-custom {
+            border: none;
+            border-radius: 25px;
+            padding: 12px 25px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+            color: white;
+        }
+
+        .btn-secondary-custom {
+            background: linear-gradient(135deg, #6c757d, #495057);
+            color: white;
+        }
+
+        .btn-secondary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.6);
+            color: white;
+        }
+
+        .btn-info-custom {
+            background: linear-gradient(135deg, var(--info-color), #6f42c1);
+            color: white;
+        }
+
+        .btn-info-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(23, 162, 184, 0.6);
+            color: white;
+        }
+
+        .btn-danger-custom {
+            background: linear-gradient(135deg, var(--danger-color), #e83e8c);
+            color: white;
+        }
+
+        .btn-danger-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.6);
+            color: white;
+        }
+
+        .quick-action-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+
+        .quick-action-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 15px;
+        }
+
+        .quick-action-subtitle {
+            color: #6c757d;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        .btn-quick-action {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            border-radius: 30px;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-quick-action:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.6);
+            color: white;
+        }
+
+        .footer-section {
+            background: linear-gradient(135deg, var(--dark-color) 0%, #495057 100%);
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .footer-text {
+            opacity: 0.8;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .welcome-title {
+                font-size: 2.2rem;
+            }
+            
+            .welcome-subtitle {
+                font-size: 1rem;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .actions-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .user-info-card {
+                margin: 20px 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-section {
+                padding: 30px 0;
+            }
+            
+            .content-section {
+                padding: 30px 0;
+            }
+            
+            .stat-card, .action-card, .quick-action-section {
+                margin: 0 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Header Section -->
+        <section class="header-section">
+            <div class="container header-content">
+                <h1 class="welcome-title">
+                    <i class="fas fa-car"></i> Bem-vindo ao BrawnRent!
+                </h1>
+                <p class="welcome-subtitle">Sua plataforma de aluguel de carros com conforto e praticidade</p>
+                
+                <div class="user-info-card" th:if="${cliente}">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-name" th:text="${cliente.nome}">Nome do Cliente</div>
+                    <div class="user-email" th:text="${cliente.email}">email@exemplo.com</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Content Section -->
+        <section class="content-section">
+            <div class="container">
+                <!-- Statistics -->
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-icon carros">
+                            <i class="fas fa-car"></i>
+                        </div>
+                        <div class="stat-number" th:text="${carrosDisponiveis}">0</div>
+                        <div class="stat-label">Carros Disponíveis</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon alugueis">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <div class="stat-number" th:text="${meusAlugueis}">0</div>
+                        <div class="stat-label">Meus Aluguéis</div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="actions-container">
+                    <div class="action-card">
+                        <div class="action-icon ver-carros">
+                            <i class="fas fa-car"></i>
+                        </div>
+                        <h4 class="action-title">Ver Carros</h4>
+                        <p class="action-description">Explore nossa frota de veículos disponíveis para aluguel</p>
+                        <a href="/carros/visualizar" class="btn-custom btn-primary-custom">
+                            <i class="fas fa-eye"></i> Explorar
+                        </a>
+                    </div>
+                    
+                    <div class="action-card">
+                        <div class="action-icon meus-alugueis">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <h4 class="action-title">Meus Aluguéis</h4>
+                        <p class="action-description">Visualize o histórico dos seus aluguéis e pedidos</p>
+                        <a href="/alugueis/meus-alugueis" class="btn-custom btn-secondary-custom">
+                            <i class="fas fa-list"></i> Ver Histórico
+                        </a>
+                    </div>
+                    
+                    <div class="action-card">
+                        <div class="action-icon meu-perfil">
+                            <i class="fas fa-user-edit"></i>
+                        </div>
+                        <h4 class="action-title">Meu Perfil</h4>
+                        <p class="action-description">Atualize suas informações pessoais e dados de contato</p>
+                        <a href="/profile" class="btn-custom btn-info-custom">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+                    </div>
+                    
+                    <div class="action-card">
+                        <div class="action-icon sair">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </div>
+                        <h4 class="action-title">Sair</h4>
+                        <p class="action-description">Encerrar sua sessão no sistema</p>
+                        <form th:action="@{/logout}" method="post" class="d-inline">
+                            <button type="submit" class="btn-custom btn-danger-custom">
+                                <i class="fas fa-sign-out-alt"></i> Sair
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Quick Action -->
+                <div class="quick-action-section">
+                    <h3 class="quick-action-title">
+                        <i class="fas fa-bolt text-warning"></i> Ação Rápida
+                    </h3>
+                    <p class="quick-action-subtitle">Precisa alugar um carro agora? Comece aqui!</p>
+                    <a href="/alugueis/novo" class="btn-quick-action">
+                        <i class="fas fa-plus"></i> Novo Aluguel
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer-section">
+            <div class="container">
+                <div class="footer-content">
+                    <div>
+                        <div class="footer-brand">
+                            <i class="fas fa-car"></i> BrawnRent
+                        </div>
+                    </div>
+                    <div>
+                        <p class="footer-text">&copy; 2024 BrawnRent. Todos os direitos reservados.</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
