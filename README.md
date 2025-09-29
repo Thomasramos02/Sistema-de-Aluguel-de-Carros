@@ -53,7 +53,6 @@ O **BrawnRent** é um sistema web para gerenciamento de aluguel de carros, ofere
 - **Spring Boot** - Framework web
 - **Spring Security** - Autenticação
 - **Spring Data JPA** - Persistência
-- **Hibernate** - ORM
 - **Maven** - Dependências
 
 ### Frontend
@@ -63,8 +62,8 @@ O **BrawnRent** é um sistema web para gerenciamento de aluguel de carros, ofere
 - **CSS3** - Estilização customizada
 
 ### Banco de Dados
-- **H2 Database** - Banco em memória
-
+- **Postgres** - Banco de dados
+- **BeeKeeperStudio** - Visualizador de Banco de Dados
 ---
 
 ## 🚀 Como Executar
@@ -79,8 +78,11 @@ O **BrawnRent** é um sistema web para gerenciamento de aluguel de carros, ofere
 git clone https://github.com/seu-usuario/Sistema-de-Aluguel-de-Carros.git
 cd Sistema-de-Aluguel-de-Carros/code/backend/aluguel-carros/aluguel-carros
 
+# OBS: Se precisar troque no aplication.proprieties seu usuário e senha do postgresql
+
 # Execute o projeto
 mvn spring-boot:run
+
 ```
 
 ### Acesso
