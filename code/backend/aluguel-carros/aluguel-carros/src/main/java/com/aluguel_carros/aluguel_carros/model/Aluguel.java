@@ -20,7 +20,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Aluguel {
-    
+    //juntar essa classe PedidoAluguel com Aluguel assim teria um modelo de dados mais simples
+    // e a classe estaria mais limpa, o banco de dados n precisaria criar outra tabela tbm
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
